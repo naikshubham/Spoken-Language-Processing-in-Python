@@ -38,7 +38,79 @@ b`\xfd\xff\xfb\xff\xf8\xff\xf7\...`
 ### Working with audio is different
 - Have to convert the audio to something useful.
 - Even a small sample of audio can contain large amount of information (adding background noise, other speakers)
-- 
+
+### Converting sound wave bytes to integers using `numpy`
+
+```python
+import numpy as np
+
+# convert soundwave_gm from bytes to integers
+signal_gm = np.frombuffer(soundwave_gm, dtype='int16')
+
+# frombuffer converts a series of data into a 1-D array
+
+# show first 10 items
+signal_gm[:10]
+```
+- Frequency is the measure of information per second, our soundwave has a freq of 48kHz and 2 seconds long and thus 96k pieces of information.
+
+### Finding the frame rate
+- Frequency(hz) = length of wave object array/duration of audio file(seconds)
+- calling `getframerate()` on wave objec would return its framerate
+
+```python
+# get the frame rate
+framerate_gm = good_morning.getframerate()
+```
+
+- Duration of audio file(sec) = length of wave object array / frequency(Hz)
+
+### Finding sound wave timestamps
+- we can use `np.linspace` to figure the timestamp where each soundwave value occurs.
+
+```python
+# return evenly spaced values between start and stop
+np.linspace(start=1, stop=10, num=10)
+
+# get the timestamps of the good morning sound wave
+time_gm = np.linspace(start=0,
+                      stop=len(soundwave_gm)/framerate_gm,
+                      num=len(soundwave_gm))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
