@@ -131,26 +131,77 @@ with clean_support_call as source:
 
 
 
+### Visualizing sound waves
+- New audio file : good_afternoon.wav, we will plot both the sound waves and observe the difference between them. Both the good morning and good afternoon audio files are 48khz or 48000 frames per second
+- Having audio files at the same frame rate and ensuring the dame data transformation are made on each of them is important. This is bcz if they are different, we have got the potential for data mismatches, which will prevent us from further processing.
+- Same data transformations are done on good_afternoon file
 
+#### Setting up a plot
 
+```python
+import matplotlib.pyplot as plt
+plt.title('Good morning vs Good afternoon')
 
+# x and y labels
+plt.xlabel("Time (sec)")
+plt.ylabel("Amplitude") # amplitude - or how much the sound wave displaces air particles as it moves through the air. A value of 0 indicates no sound at all
 
+# add sound wave values
+plt.plot(time_ga, soundwave_ga, label = "Good Afternoon")
+plt.plot(time_gm, soundwave_gm, label = "Good Morning", alpha=0.5)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+plt.legend()
+plt.show()
 ```
+
+- in the beginning, two sound waves are similar where the word 'good' would be but they begin to differ as morning and afternoon gets uttered
+
+### SpeechRecognition Python library
+- Some existing python libraries **CMU Sphinx, Kaldi, SpeechRecognition, Wav2letter++by Facebook**
+
+#### Using the Recognizer class from SpeechRecognition
+
+```python
+# import the speech recognition library
+import speech_recognition as sr
+
+# create an instance of recognizer
+recognizer = sr.Recognizer()
+
+# set the energy threshold
+# the energy threshold can be thought of as the loudness of audio which is considered speech, values below the threshold are considered as silence, values above are considered speech.A silent room is beetween 0 to 100
+# SpeechRecognition documentation recommends 300 as a starting value which covers most speech files
+
+recognizer.energy_threshold = 300
+```
+
+#### Using the Recognizer class to recognize speech
+- Recognizer class has built-in functions which interact with speech APIs, `recognize_bing()` accesses Microsoft's cognitive services, `recognize_google()` uses Google's free web speech API, `recognize_google_cloud()` accesses Google's cloud speech API, `recognize_wit()` uses the wit.ai platform.
+- They all accept an audio file and return text, which is hopefully the transcribed speech from the audio file
+
+#### SppechRecognition Example
+- Focus on `recognize_google`
+- Recognize speech from an audio file with SpeechRecognition
+
+```python
+import SpeechRecognition as sr
+
+recognizer = sr.Recognizer()
+
+recognizer.recognize_google(audio_data=audio_file, language="en-US")
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
