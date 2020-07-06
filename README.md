@@ -78,6 +78,59 @@ time_gm = np.linspace(start=0,
                       num=len(soundwave_gm))
 ```
 
+### The AudioFile class
+
+```python
+import speech_recognition as sr
+
+# setup recognizer instance
+recognizer = sr.Recognizer()
+
+# read in audio file
+clean_support_call = sr.AudioFile('clean.wav')
+
+# check type of clean_support_call
+type(clean_support_call)
+
+# convert from audiofile to audiodata
+with clean_support_call as source:
+    # record the audio
+    clean_support_call_audio = recognizer.record(source)
+
+# transcribing our AudioData
+recognizer.recognize_google(audio_data=clean_support_call_audio)
+```
+
+#### Duration and offset
+- `Duration` and `offset` both None by default
+- The record method records up to duration seconds of audio from source starting at offset. They are both set to None by default.
+- This means that by default, record will record from the beginning of the file until there is no more audio. We can change this by setting them to a float value.
+- For e.g, if we wanted the first 2 secs of all our audio files, we could set duration to 2. 
+- The `offset parameter` can be used to cut off or skip over a specified amount of seconds at the start of an audio file.
+
+```python
+# leave duration and offset as default
+with clean_support_call as source:
+    clean_support_call_audio = recognizer.record(source, duration=None, offset=None)
+    
+# get first 2-secs of clean support call
+with clean_support_call as source:
+    clean_support_call_audio = recognizer.record(source, duration=2.0)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
