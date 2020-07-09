@@ -119,18 +119,6 @@ with clean_support_call as source:
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ### Visualizing sound waves
 - New audio file : good_afternoon.wav, we will plot both the sound waves and observe the difference between them. Both the good morning and good afternoon audio files are 48khz or 48000 frames per second
 - Having audio files at the same frame rate and ensuring the dame data transformation are made on each of them is important. This is bcz if they are different, we have got the potential for data mismatches, which will prevent us from further processing.
@@ -179,7 +167,7 @@ recognizer.energy_threshold = 300
 - Recognizer class has built-in functions which interact with speech APIs, `recognize_bing()` accesses Microsoft's cognitive services, `recognize_google()` uses Google's free web speech API, `recognize_google_cloud()` accesses Google's cloud speech API, `recognize_wit()` uses the wit.ai platform.
 - They all accept an audio file and return text, which is hopefully the transcribed speech from the audio file
 
-#### SppechRecognition Example
+#### SpeechRecognition Example
 - Focus on `recognize_google`
 - Recognize speech from an audio file with SpeechRecognition
 
@@ -191,10 +179,54 @@ recognizer = sr.Recognizer()
 recognizer.recognize_google(audio_data=audio_file, language="en-US")
 ```
 
+### Dealing with different kinds of audio
+- Although SpeechRecognition is capable of transcribing audio, it doesn't necessarily know what kind of audio it's transcribing.
+- For e.g, if we pass recognizer an audio file with Japanese speech but the language tag was English US, we'd get back the Japanese audio in English characters.
 
+```python
+recognizer = sr.Recognizer()
 
+# pass the japanese audio to recognize google
+text = recognizer.recognize_google(japanese_good_morning, langauge='en-US')
 
+print(text)
+```
 
+- And if we passed the same audio file with the language tag set to `ja` for japanese, we'd get the audio transcribed into Japanese characters. The thing to note is SpeechRecognition library doesn't automatically detect languages. So we have to ensure this parameter is set manually and make sure the API we are using has the capability to transcribe the language the audio files are in.
+
+#### Non-speech audio
+- If we pass SpeechRecognition an audio file of a leopard roaring, it would return an unknown value error because no speech was detected. Bcz isn't human speech. We can prevent errors by using the show all parameter.
+- The show all parameter shows a list of all the potential transcriptions the recognize google function came up with. In case of the leopard roar, the list comes back empty but we avoid raising an error.
+- Or in the case of Japanese file ,we will see the different potential transcriptions.
+
+```python
+# recognizing japanese audio with show_all=True
+
+text = recognizer.recognize_google(japanese_audio, language="en-US", show_all=True)
+
+print(text)
+```
+
+#### Multiple speakers
+- The process of splitting more than one speaker from a single audio file is called **speaker diarization**.
+
+#### Noisy audio
+- If we have trobule hearing the speech, so will the APIs.
+- To try and accomadate for background noise, the recognizer class has a built-in function `adjust_for_ambient_noise`, which takes a parameter `duration`.
+- The recognizer class then listens for duration seconds at the start of the audio file and adjusts the energy threshold, or the amount the recognizer class listens, to a level suitable for the background noise.
+- How much space we have at the start of the audio file will dictate what we can set the duration value to. Documentation suggests a value between 0.5 - 1 sec.
+
+```python
+noisy_support_call = sr.AudioFile(noisy_support_call.wav)
+
+with noisy_support_call as source:
+    # adjust for ambient noise and record
+    recognizer.adjust_for_ambient_noise(source, duration=0.5)
+    noisy_support_call_audio = recognizer.record(source)
+
+# record the audio
+recognizer.recognize_google(noisy_support_call_audio)
+```
 
 
 
