@@ -228,9 +228,75 @@ with noisy_support_call as source:
 recognizer.recognize_google(noisy_support_call_audio)
 ```
 
+### PyDub
+- Works well with `.wav`, needs `ffmpeg` for other formats like `mp3`
 
+#### PyDub's main class, AudioSegment
 
+```python
+from pydub import AudioSegment
 
+# import an audio file # format is only for readability, as it gets inferred from the audio file name
+wav_file = AudioSegment.from_file(file="wav_file.wav", format="wav")
+```
+
+#### Playing an audio file
+`pip install simpleaudio`
+
+```python
+from pydub.playback import play
+
+# import audio file
+wav_file = AudioSegment.from_file(file="wav_file.wav")
+
+# play the audio file
+play(wav_file)
+```
+
+#### Audio parameters
+
+```python
+# pydub automatically infers number of parameters from the file
+wav_file = AudioSegment.from_file(file="wav_file.wav")
+two_speakers = AudioSegment.from_file(file="two_speakers.wav")
+
+# check for number of channels
+wav_file.channels, two_speakers.channels
+wav_file.frame_rate
+
+# find the number of bytes per sample
+wav_file.sample_width
+wav_file.max
+```
+
+- Example, callig channels on AudioSegment will show us the number pf channels, 1 for mono, 2 for stereo audio.
+- Calling frame rate gives us the sample of our AudioSegment in Hertz.
+- sample_width tells us the no of bytes per sample. 1 means 8-bit, 2 means 16-bit
+- max will tell us the max amplitude of our audio file, which can be considered loudness and is useful for normalizing sound levels.
+
+#### Changing audio parameters
+- We can adjust them using set attribute name style functions like set sample width to adjust the sample width.
+
+```python
+# change ATTRIBUTENAME of AudioSegment to x
+changed_audio_segment = audio_segment.set_ATTRIBUTENAME(x)
+
+# change sample width to 1
+wav_file_width_1 = wav_file.sample_width(1)
+wav_file_width_1.sample_width
+
+# change sample rate
+wav_file_16k = wav_file.set_frame_rate(16000)
+wav_file_16k.frame_rate
+
+# change number of channels
+wav_file_1_channel = wav_file.set_channels(1)
+wav_file_1_channel.channels
+```
+
+- Some APIs require our audio files to have certain values for these parameters. 
+- A rule of thumb is the higher the values, excluding channels, the better.
+- We should aim for a minimum of 16khz as the frame rate and to have our audio files in wav format.
 
 
 
