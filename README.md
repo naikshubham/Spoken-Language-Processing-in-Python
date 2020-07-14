@@ -298,6 +298,15 @@ wav_file_1_channel.channels
 - A rule of thumb is the higher the values, excluding channels, the better.
 - We should aim for a minimum of 16khz as the frame rate and to have our audio files in wav format.
 
+### Manipulating audio files with PyDub
+- We can make our AudioSegments louder or quieter by adding or subtracting integers. Make wav file 60 decibels quiter
+
+```python
+wav_file = AudioSegment.from_file("wav_file.wav")
+
+# minus 60 dB
+quiet_wav_file = wav_file - 60
+```
 
 
 
