@@ -308,8 +308,94 @@ wav_file = AudioSegment.from_file("wav_file.wav")
 quiet_wav_file = wav_file - 60
 ```
 
+- In practice, we're more likely to increase the volume of our AudioSegments. We can do this by adding an integer. This will increase our AudioSegment's average volume level by the same number of decibels.
 
+#### Increasing the volume
 
+```python
+# increase the volume by 10 dB
+louder_wav_file = wav_file + 10
+```
+
+- If the audio files ar etoo quiet or too loud, they may produce transcription errors.
+- Some audio files might differ in loudness throughout. They might begin quiet and then increase in sound as a person gets comfortable talking or adjusts the microphone.
+- Normalize function is great for taking care of this.
+- It finds the highest level of audio throughout an AudioSegment and then boosts the rest of the audio up to match.
+- Import normalize function from pydub.effects module. Then to even out the sound levels in an AudioSegment, we pass it to the normalize function.
+
+```python
+# import AudioSegment and normalize
+from pydub import AudioSegment
+from pydub.effects import normalize
+from pydub.playback import play
+
+# import uneven sound audio file
+loud_quiet = AudioSegment.from_file("loud_quiet.wav")
+# normalize the sound levels
+normalized_loud_quiet = normalize(loud_quiet)
+
+# check the sound
+play(normalized_loud_quiet)
+```
+
+- Ensuring our audio file is the same loudness throughout can help with transcription.
+
+#### Remixing audio files
+- Another handy feature of AudioSegments is that they are sliceable and combinable. This is helpful if we need to cut our audio files down or combine them in some way.
+- Let's say we know our audio files has 5-seconds of static at the beginning and we didn't want to waste compute power trying to transcribe the static.
+
+```python
+# import audio file with static at start
+static_at_start = AudioSegment.from_file("static_at_start.wav")
+
+# remove the static via slicing
+no_static_at_start = static_at_start[5000:]
+
+# check the new sound
+play(no_static_at_start)
+```
+
+- Add two audiosegments together using the addition operator.
+
+```python
+# import two audio files
+wav_file_1 = AudioSegment.from_file('wav_file_1.wav')
+wav_file_2 = AudioSegment.from_file('wav_file_2.wav')
+
+# combine the 2 audio files
+wav_file_3 = wav_file_1 + wav_file_2
+
+# check the sound
+play(wave_file_3)
+
+# combine two wav files and make the combination louder
+louder_wav_file_3 = wav_file_1 + wav_file_2 + 10
+```
+
+- If the audio file has different characteristics, combining them like this automatically scales parameters such as frame rate to be equal to the higher quality audio file.
+
+#### Splitting audio
+- Transcribing multiple speakers on one audio file. E.g transcribing phone calls and using Pydub, we find audio files are recorded in stereo format, two channels. 
+- PyDub allows for a stereo audiosegment to split into two mono, single channel, AudioSegments using the split to mono function.
+
+```python
+phone_call = AudioSegment.from_file("phone_call.wav")
+
+# find the number of channels
+phone_call.channels
+
+# split stereo to mono
+phone_call_channels = phone_call.split_to_mono()
+phone_call_channels
+
+# find no of channels of first list item
+phone_call_channels[0].channels
+
+# recognize the first channel
+recognizer.recognize_google(phone_call_channel_1)
+```
+
+- As long as the speakers have been recorded on separate channels, we can now transcribe their audio individually.
 
 
 
