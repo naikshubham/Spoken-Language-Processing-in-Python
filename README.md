@@ -397,10 +397,58 @@ recognizer.recognize_google(phone_call_channel_1)
 
 - As long as the speakers have been recorded on separate channels, we can now transcribe their audio individually.
 
+### Converting and saving audio files with PyDub
+
+#### Exporting audio files
+- PyDub has a built-in method for exporting AudioSegments.
+
+```python
+from pydub import AudioSegment
+
+# import audio file
+wav_file = AudioSegment.from_file("wav_file.wav")
+
+# increase by 10 decibels
+louder_wav_file = wav_file + 10
+
+# export louder audio file, the default format is mp3
+louder_wav_file.export(out_f='louder_wav_file.wav", format="wav")
+```
+
+#### Reformatting and exporting multiple audio files
+- Working with only one audio file at a time can be slow and cubersome.Manipulating many audio files at once is faster. Remember we need ffmpeg for anything other than wav.
+
+```python
+def make_wav(wrong_folder_path, right_folder_path):
+    # loop trough wrongly formatted files
+    for file in os.scandir(wrong_folder_path):
+      # only work with files with audio extensions we're fixing
+      if file.path.endswith('.mp3') or file.endswith('.flac'):
+          # create a new .wav filename
+          out_file = right_folder_path + os.path.splitext(os.path.basename(file.path))[0] + ".wav"
+    # read in the audio file and export it in wav format
+    AudioSegment.from_file(file.path).export(out_file, format="wav")
+    
+make_wav("data/wrong_formats/", "data/right_format/")
+```
+
+#### Manipulating and exporting
+
+```python
+def make_no_static_louder(static_quiet, louder_no_static):
+    # loop trough wrongly formatted files
+    for file in os.scandir(static_quiet_folder_path):
+    # create new file path
+    out_file = louder_no_static + os.path.splitext(os.path.basename(file.path))[0] + ".wav"
+    # read the audio file
+    audio_file = AudioSegment.from_file(file.path)
+    # remove first 3 secs and add 10 decibels and export
+    audio_file = (audio_file[3100:] + 10).export(out_file, format="wav")
+```
 
 
-
-
+    
+    
 
 
 
