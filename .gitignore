@@ -18,6 +18,8 @@ lib/
 lib64/
 parts/
 sdist/
+./codes/ffmpeg.exe
+./codes/ffprobe.exe
 var/
 wheels/
 pip-wheel-metadata/
